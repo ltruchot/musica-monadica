@@ -1,6 +1,7 @@
 module Main (main) where
 
-import           Lib (generateMX)
+import           Data.Text.Lazy.IO as TextLazy (putStrLn)
+import           Lib               (generateMX)
 
 main :: IO ()
-main = generateMX
+main = TextLazy.putStrLn $ generateMX ()

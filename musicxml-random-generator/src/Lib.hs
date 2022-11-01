@@ -4,22 +4,32 @@ module Lib
     ( generateMX
     ) where
 
-import qualified Data.Map          as Map
-import           Data.Maybe        (fromMaybe)
-import           Data.Text         (Text)
-import           Data.Text.Lazy.IO as TextLazy (putStrLn)
-import           Domain            (Clef (BassClef), Note (Do, La, Re, Sol),
-                                    Octave (O2, O3), TimeSignature (CommonTime),
-                                    getMXClef, getMXNote, getMXTimeSignature,
-                                    getMxOctave)
-import           Text.XML          (Doctype (Doctype), Document (Document),
-                                    Element (Element), ExternalID (PublicID),
-                                    Name, Node (NodeContent, NodeElement),
-                                    Prologue (Prologue), def, renderText)
+import           Asterius.Aeson
+import           Asterius.ByteString
+import           Asterius.Text
+import           Asterius.Types
+import qualified Data.Map                as Map
+import           Data.Maybe              (fromMaybe)
+import           Data.Text               (Text)
+import qualified Data.Text.Internal.Lazy
+import           Domain                  (Clef (BassClef),
+                                          Note (Do, La, Re, Sol),
+                                          Octave (O2, O3),
+                                          TimeSignature (CommonTime), getMXClef,
+                                          getMXNote, getMXTimeSignature,
+                                          getMxOctave)
+import           Text.XML                (Doctype (Doctype),
+                                          Document (Document),
+                                          Element (Element),
+                                          ExternalID (PublicID), Name,
+                                          Node (NodeContent, NodeElement),
+                                          Prologue (Prologue), def, renderText)
 
 
-generateMX :: IO ()
-generateMX = TextLazy.putStrLn $ renderText def $ Document (Prologue [] (Just musicXmlDoctype) []) content []
+
+-- generateMX :: () -> Data.Text.Internal.Lazy.Text
+foreign export javascript "generateMX" generateMX :: JSString -> JSString
+generateMX _ = toJSString $ show (renderText def $ Document (Prologue [] (Just musicXmlDoctype) []) content [])
 
 -- meta
 musicXmlDoctype :: Doctype
